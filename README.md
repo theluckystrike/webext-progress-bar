@@ -1,8 +1,12 @@
 # webext-progress-bar
 
-> Progress bar component for Chrome extensions -- linear, circular, stepped, indeterminate, and animated progress indicators for MV3.
-
+[![npm version](https://img.shields.io/npm/v/webext-progress-bar)](https://npmjs.com/package/webext-progress-bar)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
+[![Discord](https://img.shields.io/badge/Discord-Zovo-blueviolet.svg?logo=discord)](https://discord.gg/zovo)
+[![Website](https://img.shields.io/badge/Website-zovo.one-blue)](https://zovo.one)
+
+> Progress bar component for Chrome extensions -- linear, circular, stepped, indeterminate, and animated progress indicators for MV3.
 
 ## Install
 
@@ -98,3 +102,18 @@ Resets progress to 0% and restores full opacity.
 ## License
 
 MIT
+
+## See Also
+
+### Related Zovo Repositories
+
+- [webext-toast-notifications](https://github.com/theluckystrike/webext-toast-notifications) - Toast notifications
+- [webext-tooltip](https://github.com/theluckystrike/webext-tooltip) - Tooltip component
+- [awesome-chrome-extensions-dev](https://github.com/theluckystrike/awesome-chrome-extensions-dev) - Curated list of Chrome extension development resources
+
+### Zovo Chrome Extensions
+
+- [Zovo Tab Manager](https://chrome.google.com/webstore/detail/zovo-tab-manager) - Manage tabs efficiently
+- [Zovo Focus](https://chrome.google.com/webstore/detail/zovo-focus) - Block distractions
+
+Visit [zovo.one](https://zovo.one) for more information.
