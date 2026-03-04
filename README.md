@@ -1,163 +1,100 @@
-# webext-progress-bar — Progress Indicators for Extensions
+# webext-progress-bar
 
-[![npm version](https://img.shields.io/npm/v/webext-progress-bar)](https://npmjs.com/package/webext-progress-bar)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![Chrome Web Extension](https://img.shields.io/badge/Chrome-Web%20Extension-orange.svg)](https://developer.chrome.com/docs/extensions/)
-[![CI Status](https://github.com/theluckystrike/webext-progress-bar/actions/workflows/ci.yml/badge.svg)](https://github.com/theluckystrike/webext-progress-bar/actions)
-[![Discord](https://img.shields.io/badge/Discord-Zovo-blueviolet.svg?logo=discord)](https://discord.gg/zovo)
-[![Website](https://img.shields.io/badge/Website-zovo.one-blue)](https://zovo.one)
-[![GitHub Stars](https://img.shields.io/github/stars/theluckystrike/webext-progress-bar?style=social)](https://github.com/theluckystrike/webext-progress-bar)
+> Progress bar component for Chrome extensions -- linear, circular, stepped, indeterminate, and animated progress indicators for MV3.
 
-> Linear, indeterminate, increment, complete, and reset progress bars.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**webext-progress-bar** provides beautiful, customizable progress indicators for Chrome extensions. Show loading progress, completion status, and indeterminate states with smooth animations.
-
-Part of the [Zovo](https://zovo.one) developer tools family.
-
-## Features
-
-- ✅ **Linear Progress** - Horizontal progress bar
-- ✅ **Indeterminate State** - Animated loading indicator
-- ✅ **Increment Support** - Easy value increments
-- ✅ **Complete State** - Visual completion indication
-- ✅ **Reset Capability** - Reuse progress bars
-- ✅ **TypeScript Support** - Full type definitions included
-
-## Installation
+## Install
 
 ```bash
 npm install webext-progress-bar
 ```
 
-## Quick Start
+## Usage
 
 ```typescript
 import { ProgressBar } from 'webext-progress-bar';
 
-// Create a linear progress bar
-const bar = ProgressBar.linear('container', { color: '#10B981' });
-bar.set(50).increment(25);
-bar.complete();
-```
-
-## Usage Examples
-
-### Basic Linear Progress
-
-```typescript
-const bar = ProgressBar.linear('progress-container');
-
-// Set value (0-100)
-bar.set(25);
-
-// Increment by amount
-bar.increment(10);
-
-// Decrement by amount
-bar.decrement(5);
-
-// Complete the progress
-bar.complete();
-```
-
-### Indeterminate Progress
-
-```typescript
-const bar = ProgressBar.linear('container', { indeterminate: true });
-bar.start(); // Shows animated loading
-
-// Later
-bar.stop(); // Stops animation
-```
-
-### With Custom Styling
-
-```typescript
-const bar = ProgressBar.linear('container', {
-  color: '#10B981',           // Progress color
-  backgroundColor: '#E5E7EB', // Track color
-  height: '8px',              // Bar height
-  borderRadius: '4px',        // Corner radius
-  animated: true,             // Smooth transitions
-});
-```
-
-### Circular Progress
-
-```typescript
-const bar = ProgressBar.circular('container', {
-  size: 64,
-  strokeWidth: 4,
-  color: '#3B82F6',
+// Create a linear progress bar inside a container element
+const bar = ProgressBar.linear('progress-container', {
+  color: '#10B981',
+  height: 8,
+  rounded: true,
 });
 
-bar.set(50);
+// Set progress to a specific percentage (0-100)
+bar.set(45);
+
+// Increment progress by a given amount
+bar.increment(10); // now at 55%
+
+// Read the current value
+console.log(bar.get()); // 55
+
+// Mark as complete (sets to 100% and fades out)
+bar.complete();
+
+// Reset back to 0%
+bar.reset();
+
+// Create an indeterminate (loading) progress bar
+const loader = ProgressBar.indeterminate('loader-container', '#3B82F6');
+// Remove it when done
+loader.remove();
 ```
 
 ## API
 
-### ProgressBar Methods
+### `ProgressBar` (class)
 
-| Method | Description |
-|--------|-------------|
-| `ProgressBar.linear(container, options)` | Create linear progress bar |
-| `ProgressBar.circular(container, options)` | Create circular progress bar |
-| `bar.set(value)` | Set progress value (0-100) |
-| `bar.increment(amount)` | Increment progress |
-| `bar.decrement(amount)` | Decrement progress |
-| `bar.complete()` | Show complete state |
-| `bar.reset()` | Reset to 0 |
-| `bar.start()` | Start indeterminate animation |
-| `bar.stop()` | Stop indeterminate animation |
+#### `static linear(containerId: string, options?: { color?: string; height?: number; rounded?: boolean }): ProgressBar`
 
-### Options
+Creates a determinate linear progress bar and appends it to the specified container.
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| color | string | '#3B82F6' | Progress color |
-| backgroundColor | string | '#E5E7EB' | Track color |
-| height | string | '4px' | Bar height |
-| borderRadius | string | '2px' | Corner radius |
-| animated | boolean | true | Enable animations |
-| indeterminate | boolean | false | Start in indeterminate mode |
+- **containerId** (`string`) -- The `id` of the container element.
+- **options.color** (`string`, default `'#3B82F6'`) -- The fill color of the progress bar.
+- **options.height** (`number`, default `6`) -- The height in pixels.
+- **options.rounded** (`boolean`, default `true`) -- Whether to use rounded corners.
+- **Returns** `ProgressBar` -- A new instance for controlling the progress bar.
 
-## Contributing
+#### `static indeterminate(containerId: string, color?: string): HTMLElement`
 
-Contributions are welcome! Please follow these steps:
+Creates an indeterminate (continuously animating) progress bar and appends it to the specified container.
 
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/progress-feature`
-3. **Make** your changes
-4. **Test** your changes: `npm test`
-5. **Commit** your changes: `git commit -m 'Add new feature'`
-6. **Push** to the branch: `git push origin feature/progress-feature`
-7. **Submit** a Pull Request
+- **containerId** (`string`) -- The `id` of the container element.
+- **color** (`string`, default `'#3B82F6'`) -- The fill color.
+- **Returns** `HTMLElement` -- The progress bar DOM element. Call `.remove()` to destroy it.
 
-## Built by Zovo
+#### `set(percent: number): this`
 
-Part of the [Zovo](https://zovo.one) developer tools family — privacy-first Chrome extensions built by developers, for developers.
+Sets the progress bar to an exact percentage, clamped to the range 0-100.
 
-## See Also
+- **percent** (`number`) -- The target percentage.
+- **Returns** `this` -- The instance for chaining.
 
-### Related Zovo Repositories
+#### `increment(amount?: number): this`
 
-- [webext-toast-notifications](https://github.com/theluckystrike/webext-toast-notifications) - Toast notifications
-- [webext-quick-settings](https://github.com/theluckystrike/webext-quick-settings) - Settings panel
-- [chrome-storage-plus](https://github.com/theluckystrike/chrome-storage-plus) - Type-safe storage
+Increments the current progress value by the given amount.
 
-### Zovo Chrome Extensions
+- **amount** (`number`, default `10`) -- The percentage points to add.
+- **Returns** `this` -- The instance for chaining.
 
-- [Zovo Tab Manager](https://chrome.google.com/webstore/detail/zovo-tab-manager) - Manage tabs efficiently
-- [Zovo Focus](https://chrome.google.com/webstore/detail/zovo-focus) - Block distractions
-- [Zovo Permissions Scanner](https://chrome.google.com/webstore/detail/zovo-permissions-scanner) - Check extension privacy grades
+#### `get(): number`
 
-Visit [zovo.one](https://zovo.one) for more information.
+Returns the current progress value (0-100).
+
+- **Returns** `number` -- The current percentage.
+
+#### `complete(): void`
+
+Sets progress to 100% and fades the bar out after a short delay.
+
+#### `reset(): this`
+
+Resets progress to 0% and restores full opacity.
+
+- **Returns** `this` -- The instance for chaining.
 
 ## License
 
-MIT — [Zovo](https://zovo.one)
-
----
-
-*Built by developers, for developers. No compromises on privacy.*
+MIT
