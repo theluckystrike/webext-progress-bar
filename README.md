@@ -9,6 +9,8 @@
 
 > Progress bar component for Chrome extensions -- linear, circular, stepped, indeterminate, and animated progress indicators for MV3.
 
+Part of the [Zovo](https://zovo.one) developer tools family.
+
 ## Install
 
 ```bash
