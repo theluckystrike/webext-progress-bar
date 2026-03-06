@@ -3,134 +3,123 @@
 [![npm version](https://img.shields.io/npm/v/webext-progress-bar)](https://npmjs.com/package/webext-progress-bar)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![Discord](https://img.shields.io/badge/Discord-Zovo-blueviolet.svg?logo=discord)](https://discord.gg/zovo)
-[![Website](https://img.shields.io/badge/Website-zovo.one-blue)](https://zovo.one)
-[![GitHub Stars](https://img.shields.io/github/stars/theluckystrike/webext-progress-bar?style=social)](https://github.com/theluckystrike/webext-progress-bar)
 
-> Progress bar component for Chrome extensions -- linear, circular, stepped, indeterminate, and animated progress indicators for MV3.
+Lightweight progress bar component for Chrome extensions and browser extensions running Manifest V3. Supports linear determinate bars with percentage control and indeterminate loading animations. Zero dependencies, pure DOM, smooth CSS transitions.
 
-Part of the [Zovo](https://zovo.one) developer tools family.
-
-## Install
+INSTALL
 
 ```bash
 npm install webext-progress-bar
 ```
 
-## Usage
+USAGE
 
 ```typescript
 import { ProgressBar } from 'webext-progress-bar';
 
-// Create a linear progress bar inside a container element
+// Linear determinate bar inside a container element
 const bar = ProgressBar.linear('progress-container', {
   color: '#10B981',
   height: 8,
   rounded: true,
 });
 
-// Set progress to a specific percentage (0-100)
+// Set to a specific percentage (clamped 0-100)
 bar.set(45);
 
-// Increment progress by a given amount
-bar.increment(10); // now at 55%
+// Bump it up by a given amount (default 10)
+bar.increment(10); // now at 55
 
 // Read the current value
 console.log(bar.get()); // 55
 
-// Mark as complete (sets to 100% and fades out)
+// Mark complete, which sets 100% then fades out
 bar.complete();
 
-// Reset back to 0%
+// Reset back to 0% and restore opacity
 bar.reset();
+```
 
-// Create an indeterminate (loading) progress bar
+Indeterminate loader for unknown-duration tasks:
+
+```typescript
 const loader = ProgressBar.indeterminate('loader-container', '#3B82F6');
-// Remove it when done
+
+// When done, remove it from the DOM
 loader.remove();
 ```
 
-## API
+API
 
-### `ProgressBar` (class)
+ProgressBar is the single export. It provides two static factory methods and a set of instance methods on linear bars.
 
-#### `static linear(containerId: string, options?: { color?: string; height?: number; rounded?: boolean }): ProgressBar`
+ProgressBar.linear(containerId, options?)
 
-Creates a determinate linear progress bar and appends it to the specified container.
+Creates a determinate linear progress bar and appends it to the container element matching the given ID.
 
-- **containerId** (`string`) -- The `id` of the container element.
-- **options.color** (`string`, default `'#3B82F6'`) -- The fill color of the progress bar.
-- **options.height** (`number`, default `6`) -- The height in pixels.
-- **options.rounded** (`boolean`, default `true`) -- Whether to use rounded corners.
-- **Returns** `ProgressBar` -- A new instance for controlling the progress bar.
+Parameters
 
-#### `static indeterminate(containerId: string, color?: string): HTMLElement`
+- containerId (string) -- ID of the target container element.
+- options.color (string, default '#3B82F6') -- Fill color.
+- options.height (number, default 6) -- Bar height in pixels.
+- options.rounded (boolean, default true) -- Rounded corners. When true, border radius is half the height.
 
-Creates an indeterminate (continuously animating) progress bar and appends it to the specified container.
+Returns a ProgressBar instance.
 
-- **containerId** (`string`) -- The `id` of the container element.
-- **color** (`string`, default `'#3B82F6'`) -- The fill color.
-- **Returns** `HTMLElement` -- The progress bar DOM element. Call `.remove()` to destroy it.
+If the container element is not found in the DOM, the returned instance is inert and method calls on it are safe no-ops.
 
-#### `set(percent: number): this`
+The bar renders as two nested divs. The outer div gets a light gray (#E5E7EB) background track. The inner fill div transitions width over 0.3s with ease timing.
 
-Sets the progress bar to an exact percentage, clamped to the range 0-100.
+ProgressBar.indeterminate(containerId, color?)
 
-- **percent** (`number`) -- The target percentage.
-- **Returns** `this` -- The instance for chaining.
+Creates a continuously animating loading bar and appends it to the container.
 
-#### `increment(amount?: number): this`
+Parameters
 
-Increments the current progress value by the given amount.
+- containerId (string) -- ID of the target container element.
+- color (string, default '#3B82F6') -- Fill color.
 
-- **amount** (`number`, default `10`) -- The percentage points to add.
-- **Returns** `this` -- The instance for chaining.
+Returns an HTMLElement. Call .remove() on it to destroy the bar.
 
-#### `get(): number`
+The animation uses a CSS keyframe that slides a 30%-width fill element from left -30% to 100% on a 1.5s ease-in-out infinite loop. The bar height is fixed at 4px.
 
-Returns the current progress value (0-100).
+INSTANCE METHODS
 
-- **Returns** `number` -- The current percentage.
+bar.set(percent)
 
-#### `complete(): void`
+Sets the bar to an exact percentage. The value is clamped to the 0-100 range. Returns this for chaining.
 
-Sets progress to 100% and fades the bar out after a short delay.
+bar.increment(amount?)
 
-#### `reset(): this`
+Adds amount (default 10) to the current value. Internally calls set, so clamping applies. Returns this.
 
-Resets progress to 0% and restores full opacity.
+bar.get()
 
-- **Returns** `this` -- The instance for chaining.
+Returns the current progress value as a number between 0 and 100.
 
-## License
+bar.complete()
 
-MIT
+Sets progress to 100%, then after a 300ms delay fades the entire bar out over 0.3s by transitioning opacity to 0.
 
-## Contributing
+bar.reset()
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Restores opacity to 1 and sets progress back to 0%. Returns this.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+DEFAULTS SUMMARY
 
-## See Also
+- Fill color -- #3B82F6
+- Track color -- #E5E7EB
+- Linear bar height -- 6px
+- Indeterminate bar height -- 4px
+- Rounded corners -- on
+- Transition duration -- 0.3s ease
+- Indeterminate cycle -- 1.5s ease-in-out infinite
+- Increment step -- 10
 
-### Related Zovo Repositories
+LICENSE
 
-- [webext-toast-notifications](https://github.com/theluckystrike/webext-toast-notifications) - Toast notifications
-- [webext-tooltip](https://github.com/theluckystrike/webext-tooltip) - Tooltip component
-- [awesome-chrome-extensions-dev](https://github.com/theluckystrike/awesome-chrome-extensions-dev) - Curated list of Chrome extension development resources
-
-### Zovo Chrome Extensions
-
-- [Zovo Tab Manager](https://chrome.google.com/webstore/detail/zovo-tab-manager) - Manage tabs efficiently
-- [Zovo Focus](https://chrome.google.com/webstore/detail/zovo-focus) - Block distractions
-
-Visit [zovo.one](https://zovo.one) for more information.
+MIT. See LICENSE file.
 
 ---
 
-Built by [Zovo](https://zovo.one)
+Built at [zovo.one](https://zovo.one)
